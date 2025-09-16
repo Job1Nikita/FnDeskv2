@@ -76,8 +76,8 @@ jobs:
           # - { target: i686-unknown-linux-musl     , os: ubuntu-20.04, use-cross: true }
           # - { target: x86_64-apple-darwin         , os: macos-10.15                   }
           # - { target: x86_64-pc-windows-gnu       , os: windows-2019                  }
-          # - { target: x86_64-pc-windows-msvc      , os: windows-2019                  }
-          - { target: x86_64-unknown-linux-gnu    , os: ubuntu-20.04                  }
+          - { target: x86_64-pc-windows-msvc      , os: windows-2022                  }
+          # - { target: x86_64-unknown-linux-gnu    , os: ubuntu-20.04                  }
           # - { target: x86_64-unknown-linux-musl   , os: ubuntu-20.04, use-cross: true }
     steps:
     - name: Export GitHub Actions cache environment variables
@@ -156,6 +156,13 @@ jobs:
         use-cross: ${{ matrix.job.use-cross }}
         command: build
         args: --locked --target=${{ matrix.job.target }}
+
+    - name: Upload Windows executable
+      if: matrix.job.target == 'x86_64-pc-windows-msvc'
+      uses: actions/upload-artifact@v4
+      with:
+        name: rustdesk-${{ matrix.job.target }}
+        path: target/${{ matrix.job.target }}/debug/rustdesk.exe
 
     - name: clean
       shell: bash
